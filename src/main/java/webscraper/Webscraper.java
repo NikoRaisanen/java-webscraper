@@ -4,10 +4,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.*;
-import java.io.InputStreamReader;
 import java.util.Scanner;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -80,7 +77,7 @@ public class Webscraper {
 				byte[] response = out.toByteArray();
 				
 				// Save this byte array to file locally
-				FileOutputStream fos = new FileOutputStream("C:\\Users\\niko\\eclipse-workspace\\webscraper\\images\\" + filename);
+				FileOutputStream fos = new FileOutputStream("images\\" + filename);
 				fos.write(response);
 				fos.close();
 				
