@@ -80,7 +80,7 @@ public class Webscraper {
 				byte[] response = out.toByteArray();
 				
 				// Save this byte array to file locally
-				FileOutputStream fos = new FileOutputStream("C:\\Users\\niko\\eclipse-workspace\\webscraper\\src\\main\\resources\\" + filename);
+				FileOutputStream fos = new FileOutputStream("C:\\Users\\niko\\eclipse-workspace\\webscraper\\images\\" + filename);
 				fos.write(response);
 				fos.close();
 				
