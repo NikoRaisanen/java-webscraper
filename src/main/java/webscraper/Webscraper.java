@@ -51,17 +51,40 @@ public class Webscraper {
 		imagesArray = new String[images.size()];
 		int counter = 0;
 		for (Element image : images) {
-			imagesArray[counter] = site + image.attr("src");
-			counter ++;
+			System.out.println(image.attr("src").substring(0,2));
+			Boolean isDoubleSlash = image.attr("src").substring(0,2).equals("//");
+			System.out.println(isDoubleSlash);
+			if (image.attr("src").contains("http")) {
+				System.out.println("Images are already fully qualified!");
+				imagesArray[counter] = image.attr("src");
+//				counter++;
+			} else if (image.attr("src").substring(0,2).equals("//")) {
+				System.out.println("Starts with '//'");
+				imagesArray[counter] = "http:" + image.attr("src");
+//				counter ++;
+			} else {
+				imagesArray[counter] = site + image.attr("src");
+//				counter++;
+			}
+			counter++;
 		}
+		for (String name : imagesArray)
+			System.out.println(name);
 		return imagesArray;
 		
 	}
 	public static void saveImages(String[] imageLinks) {
 		int counter = 1;
 		for (String image : imageLinks) {
+			// if null, skip
+			if (image == null) {
+				continue;
+			}
 			String[] tokens=image.split("/");
-			String filename = tokens[tokens.length - 1];
+			String filename = tokens[tokens.length - 1].toLowerCase();
+			if (filename.contains("?")) {
+				filename = filename.split("[?]")[0];
+			}
 			
 			try {
 				URL url = new URL(image);
@@ -81,7 +104,7 @@ public class Webscraper {
 				fos.write(response);
 				fos.close();
 				
-				System.out.printf("[%d / %d] -- Finished downloading: %s\n", counter, imageLinks.length, filename);
+				System.out.printf("[%d / %d] -- Finished downloading: %s\n%s\n", counter, imageLinks.length, filename, image);
 				counter ++;
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
