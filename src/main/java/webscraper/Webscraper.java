@@ -33,43 +33,42 @@ public class Webscraper {
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("*****PROGRAM TERMINATED*****\nUnable to reach the requested site");
+			System.exit(0);
 		}
 		return pageHtml;
 	}
 	
 	// Parse html and get link to all images on the page
 	public static String[] getImages(String html, String site) {
-		// Formatting site so that it can be prepended to img source
+		// Add protocol if user forgot, ensure that a / exists at end of domain
 		if (! site.endsWith("/")) {
 			site += "/";
 		}
 		String[] imagesArray;
 		Document document = Jsoup.parse(html);
 		Elements images = document.getElementsByTag("img");
+		if (images.size() == 0) {
+			System.out.printf("\nNo images found for %s", site);
+			System.exit(0);
+		}
+		
 		// Create array of size equal to amount of image tags
 		imagesArray = new String[images.size()];
 		int counter = 0;
 		for (Element image : images) {
-			System.out.println(image.attr("src").substring(0,2));
-			Boolean isDoubleSlash = image.attr("src").substring(0,2).equals("//");
-			System.out.println(isDoubleSlash);
+			if (image.attr("src") == "") {
+				continue;
+			}
 			if (image.attr("src").contains("http")) {
-				System.out.println("Images are already fully qualified!");
 				imagesArray[counter] = image.attr("src");
-//				counter++;
 			} else if (image.attr("src").substring(0,2).equals("//")) {
-				System.out.println("Starts with '//'");
 				imagesArray[counter] = "http:" + image.attr("src");
-//				counter ++;
 			} else {
 				imagesArray[counter] = site + image.attr("src");
-//				counter++;
 			}
 			counter++;
 		}
-		for (String name : imagesArray)
-			System.out.println(name);
 		return imagesArray;
 		
 	}
@@ -80,6 +79,7 @@ public class Webscraper {
 			if (image == null) {
 				continue;
 			}
+			
 			String[] tokens=image.split("/");
 			String filename = tokens[tokens.length - 1].toLowerCase();
 			if (filename.contains("?")) {
@@ -104,7 +104,7 @@ public class Webscraper {
 				fos.write(response);
 				fos.close();
 				
-				System.out.printf("[%d / %d] -- Finished downloading: %s\n%s\n", counter, imageLinks.length, filename, image);
+				System.out.printf("[%d / %d] -- Finished downloading: %s\n**Source -- %s\n", counter, imageLinks.length, filename, image);
 				counter ++;
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
@@ -116,6 +116,7 @@ public class Webscraper {
 	} // end for loop
 	
 	public static void main(String[] args) {
+		long startTime = System.nanoTime();
 		// Get website to scrape
 		System.out.print("What website would you like to scrape images from?:\t");
 		Scanner scanner = new Scanner(System.in);
@@ -127,7 +128,8 @@ public class Webscraper {
 		// Get an array containing link to all images
 		String imageLinks[] = getImages(html, site);
 		saveImages(imageLinks);
-		
+		long endTime = System.nanoTime();
+		System.out.printf("This program took %d seconds to execute", (endTime - startTime)/1000000000);
 		}
 
 	} // end class block
