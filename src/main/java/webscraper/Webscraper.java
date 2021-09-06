@@ -110,10 +110,10 @@ public class Webscraper {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
-			}
+			} // end try block
 			
-		} // end try block
-	} // end for loop
+		} // end for loop
+	} 
 	
 	public static void main(String[] args) {
 		long startTime = System.nanoTime();
